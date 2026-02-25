@@ -1,10 +1,10 @@
 blueprint:
-  name: IKEA Bilresa (Matter) - 3 zones -> 3 lights (configurable, No Action everywhere)
+  name: IKEA Bilresa (Matter) - 3 zones -> 3 lights (No action everywhere)
   description: >
     IKEA Bilresa via Matter: 3 zones (1/2, 4/5, 7/8) each controls its own light/group.
-    You can set No Action for any input (scroll up/down, button single/double/hold).
-    Middle button per zone is (3 / 6 / 9) event entity.
-    Responsiveness: mode restart + scroll debounce + anti-stale event filtering.
+    You can disable any control by choosing 'none' (No action) for scroll up/down and
+    for single/double/hold on the middle button (3/6/9).
+    Includes debounce + anti-stale filtering + mode restart for responsiveness.
 
   domain: automation
 
@@ -16,12 +16,14 @@ blueprint:
         entity:
           domain: [light]
           multiple: false
+
     light_2:
       name: Zone 2 Light/Group
       selector:
         entity:
           domain: [light]
           multiple: false
+
     light_3:
       name: Zone 3 Light/Group
       selector:
@@ -29,7 +31,7 @@ blueprint:
           domain: [light]
           multiple: false
 
-    # Scroll entities (Matter often shows these as "Current switch position (x)")
+    # Scroll entities (Matter often exposes these as "Current switch position (x)")
     scroll_1_up:
       name: Zone 1 Scroll UP entity (1)
       selector:
@@ -38,6 +40,7 @@ blueprint:
           filter:
             - domain: sensor
             - domain: number
+
     scroll_1_down:
       name: Zone 1 Scroll DOWN entity (2)
       selector:
@@ -55,6 +58,7 @@ blueprint:
           filter:
             - domain: sensor
             - domain: number
+
     scroll_2_up:
       name: Zone 2 Scroll UP entity (5)
       selector:
@@ -72,6 +76,7 @@ blueprint:
           filter:
             - domain: sensor
             - domain: number
+
     scroll_3_down:
       name: Zone 3 Scroll DOWN entity (8)
       selector:
@@ -81,19 +86,21 @@ blueprint:
             - domain: sensor
             - domain: number
 
-    # Button events (Matter event entities)
+    # Middle button events (Matter event entities)
     btn_3:
       name: Zone 1 Middle Button event (3)
       selector:
         entity:
           filter:
             - domain: event
+
     btn_6:
       name: Zone 2 Middle Button event (6)
       selector:
         entity:
           filter:
             - domain: event
+
     btn_9:
       name: Zone 3 Middle Button event (9)
       selector:
@@ -101,23 +108,18 @@ blueprint:
           filter:
             - domain: event
 
-    # Per-zone: scroll actions (No action possible)
+    # Per-zone scroll actions (strings only; choose 'none' to disable)
     z1_scroll_up_action:
       name: Zone 1 - Scroll UP action
       default: brightness
       selector:
         select:
           options:
-            - label: No action
-              value: none
-            - label: Brightness step up/down
-              value: brightness
-            - label: Kelvin step up/down
-              value: kelvin
-            - label: RGB Hue step up/down
-              value: rgb
-            - label: Preset (Bright+Cool / Dim+Warm)
-              value: preset
+            - none
+            - brightness
+            - kelvin
+            - rgb
+            - preset
 
     z1_scroll_down_action:
       name: Zone 1 - Scroll DOWN action
@@ -125,16 +127,11 @@ blueprint:
       selector:
         select:
           options:
-            - label: No action
-              value: none
-            - label: Brightness step up/down
-              value: brightness
-            - label: Kelvin step up/down
-              value: kelvin
-            - label: RGB Hue step up/down
-              value: rgb
-            - label: Preset (Bright+Cool / Dim+Warm)
-              value: preset
+            - none
+            - brightness
+            - kelvin
+            - rgb
+            - preset
 
     z2_scroll_up_action:
       name: Zone 2 - Scroll UP action
@@ -142,16 +139,11 @@ blueprint:
       selector:
         select:
           options:
-            - label: No action
-              value: none
-            - label: Brightness step up/down
-              value: brightness
-            - label: Kelvin step up/down
-              value: kelvin
-            - label: RGB Hue step up/down
-              value: rgb
-            - label: Preset (Bright+Cool / Dim+Warm)
-              value: preset
+            - none
+            - brightness
+            - kelvin
+            - rgb
+            - preset
 
     z2_scroll_down_action:
       name: Zone 2 - Scroll DOWN action
@@ -159,16 +151,11 @@ blueprint:
       selector:
         select:
           options:
-            - label: No action
-              value: none
-            - label: Brightness step up/down
-              value: brightness
-            - label: Kelvin step up/down
-              value: kelvin
-            - label: RGB Hue step up/down
-              value: rgb
-            - label: Preset (Bright+Cool / Dim+Warm)
-              value: preset
+            - none
+            - brightness
+            - kelvin
+            - rgb
+            - preset
 
     z3_scroll_up_action:
       name: Zone 3 - Scroll UP action
@@ -176,16 +163,11 @@ blueprint:
       selector:
         select:
           options:
-            - label: No action
-              value: none
-            - label: Brightness step up/down
-              value: brightness
-            - label: Kelvin step up/down
-              value: kelvin
-            - label: RGB Hue step up/down
-              value: rgb
-            - label: Preset (Bright+Cool / Dim+Warm)
-              value: preset
+            - none
+            - brightness
+            - kelvin
+            - rgb
+            - preset
 
     z3_scroll_down_action:
       name: Zone 3 - Scroll DOWN action
@@ -193,74 +175,52 @@ blueprint:
       selector:
         select:
           options:
-            - label: No action
-              value: none
-            - label: Brightness step up/down
-              value: brightness
-            - label: Kelvin step up/down
-              value: kelvin
-            - label: RGB Hue step up/down
-              value: rgb
-            - label: Preset (Bright+Cool / Dim+Warm)
-              value: preset
+            - none
+            - brightness
+            - kelvin
+            - rgb
+            - preset
 
-    # Per-zone: middle button actions (single / double / hold) with No action
+    # Middle button actions per zone (strings only; choose 'none' to disable)
     z1_single:
       name: Zone 1 - Middle SINGLE press (3)
       default: toggle
       selector:
         select:
           options:
-            - label: No action
-              value: none
-            - label: Toggle
-              value: toggle
-            - label: Turn ON
-              value: on
-            - label: Turn OFF
-              value: off
+            - none
+            - toggle
+            - on
+            - off
+
     z1_double:
       name: Zone 1 - Middle DOUBLE press (3)
       default: none
       selector:
         select:
           options:
-            - label: No action
-              value: none
-            - label: Set Bright preset
-              value: set_bright
-            - label: Set Dim preset
-              value: set_dim
-            - label: Set Cool preset
-              value: set_cool
-            - label: Set Warm preset
-              value: set_warm
-            - label: Enable Color (saturation on)
-              value: set_color_on
-            - label: Set Red
-              value: set_red
+            - none
+            - set_bright
+            - set_dim
+            - set_warm
+            - set_cool
+            - set_color_on
+            - set_red
+
     z1_hold:
       name: Zone 1 - Middle HOLD (3)
       default: kelvin_cycle
       selector:
         select:
           options:
-            - label: No action
-              value: none
-            - label: Kelvin cycle (Warm->Neutral->Cool)
-              value: kelvin_cycle
-            - label: Set Bright preset
-              value: set_bright
-            - label: Set Dim preset
-              value: set_dim
-            - label: Set Cool preset
-              value: set_cool
-            - label: Set Warm preset
-              value: set_warm
-            - label: Enable Color (saturation on)
-              value: set_color_on
-            - label: Set Red
-              value: set_red
+            - none
+            - kelvin_cycle
+            - set_bright
+            - set_dim
+            - set_warm
+            - set_cool
+            - set_color_on
+            - set_red
 
     z2_single:
       name: Zone 2 - Middle SINGLE press (6)
@@ -268,56 +228,39 @@ blueprint:
       selector:
         select:
           options:
-            - label: No action
-              value: none
-            - label: Toggle
-              value: toggle
-            - label: Turn ON
-              value: on
-            - label: Turn OFF
-              value: off
+            - none
+            - toggle
+            - on
+            - off
+
     z2_double:
       name: Zone 2 - Middle DOUBLE press (6)
       default: none
       selector:
         select:
           options:
-            - label: No action
-              value: none
-            - label: Set Bright preset
-              value: set_bright
-            - label: Set Dim preset
-              value: set_dim
-            - label: Set Cool preset
-              value: set_cool
-            - label: Set Warm preset
-              value: set_warm
-            - label: Enable Color (saturation on)
-              value: set_color_on
-            - label: Set Red
-              value: set_red
+            - none
+            - set_bright
+            - set_dim
+            - set_warm
+            - set_cool
+            - set_color_on
+            - set_red
+
     z2_hold:
       name: Zone 2 - Middle HOLD (6)
       default: none
       selector:
         select:
           options:
-            - label: No action
-              value: none
-            - label: Kelvin cycle (Warm->Neutral->Cool)
-              value: kelvin_cycle
-            - label: Set Bright preset
-              value: set_bright
-            - label: Set Dim preset
-              value: set_dim
-            - label: Set Cool preset
-              value: set_cool
-            - label: Set Warm preset
-              value: set_warm
-            - label: Enable Color (saturation on)
-              value: set_color_on
-            - label: Set Red
-              value: set_red
+            - none
+            - kelvin_cycle
+            - set_bright
+            - set_dim
+            - set_warm
+            - set_cool
+            - set_color_on
+            - set_red
 
     z3_single:
       name: Zone 3 - Middle SINGLE press (9)
@@ -325,58 +268,41 @@ blueprint:
       selector:
         select:
           options:
-            - label: No action
-              value: none
-            - label: Toggle
-              value: toggle
-            - label: Turn ON
-              value: on
-            - label: Turn OFF
-              value: off
+            - none
+            - toggle
+            - on
+            - off
+
     z3_double:
       name: Zone 3 - Middle DOUBLE press (9)
       default: none
       selector:
         select:
           options:
-            - label: No action
-              value: none
-            - label: Set Bright preset
-              value: set_bright
-            - label: Set Dim preset
-              value: set_dim
-            - label: Set Cool preset
-              value: set_cool
-            - label: Set Warm preset
-              value: set_warm
-            - label: Enable Color (saturation on)
-              value: set_color_on
-            - label: Set Red
-              value: set_red
+            - none
+            - set_bright
+            - set_dim
+            - set_warm
+            - set_cool
+            - set_color_on
+            - set_red
+
     z3_hold:
       name: Zone 3 - Middle HOLD (9)
       default: kelvin_cycle
       selector:
         select:
           options:
-            - label: No action
-              value: none
-            - label: Kelvin cycle (Warm->Neutral->Cool)
-              value: kelvin_cycle
-            - label: Set Bright preset
-              value: set_bright
-            - label: Set Dim preset
-              value: set_dim
-            - label: Set Cool preset
-              value: set_cool
-            - label: Set Warm preset
-              value: set_warm
-            - label: Enable Color (saturation on)
-              value: set_color_on
-            - label: Set Red
-              value: set_red
+            - none
+            - kelvin_cycle
+            - set_bright
+            - set_dim
+            - set_warm
+            - set_cool
+            - set_color_on
+            - set_red
 
-    # Tuning / responsiveness
+    # Responsiveness tuning
     debounce_ms:
       name: Debounce for scroll (ms)
       default: 120
@@ -507,13 +433,6 @@ variables:
   l2: !input light_2
   l3: !input light_3
 
-  s1u: !input scroll_1_up
-  s1d: !input scroll_1_down
-  s2u: !input scroll_2_up
-  s2d: !input scroll_2_down
-  s3u: !input scroll_3_up
-  s3d: !input scroll_3_down
-
   b3: !input btn_3
   b6: !input btn_6
   b9: !input btn_9
@@ -605,27 +524,30 @@ action:
                 {% elif trigger.id == 'z3_up' %} {{ z3_su }}
                 {% else %} {{ z3_sd }} {% endif %}
 
-          # No action = do nothing
           - choose:
               - conditions:
                   - condition: template
                     value_template: "{{ mode == 'none' }}"
                 sequence: []
+
               - conditions:
                   - condition: template
                     value_template: "{{ mode == 'brightness' }}"
                 sequence:
                   - service: light.turn_on
-                    target: {entity_id: "{{ tl }}"}
+                    target:
+                      entity_id: "{{ tl }}"
                     data:
                       brightness_step_pct: "{{ step_pct * direction }}"
                       transition: "{{ trans }}"
+
               - conditions:
                   - condition: template
                     value_template: "{{ mode == 'kelvin' }}"
                 sequence:
                   - service: light.turn_on
-                    target: {entity_id: "{{ tl }}"}
+                    target:
+                      entity_id: "{{ tl }}"
                     data:
                       color_temp_kelvin: >
                         {% set current = state_attr(tl, 'color_temp_kelvin') | default(3000) | int %}
@@ -635,12 +557,14 @@ action:
                           {{ [current - (step_kelvin | int), 2000] | max }}
                         {% endif %}
                       transition: "{{ trans }}"
+
               - conditions:
                   - condition: template
                     value_template: "{{ mode == 'rgb' }}"
                 sequence:
                   - service: light.turn_on
-                    target: {entity_id: "{{ tl }}"}
+                    target:
+                      entity_id: "{{ tl }}"
                     data:
                       hs_color: >
                         {% set current = state_attr(tl, 'hs_color') %}
@@ -648,12 +572,14 @@ action:
                         {% set s = (current[1] if current else 100) | float %}
                         {{ [ (h + (step_hue * direction)) % 360, s ] }}
                       transition: "{{ trans }}"
+
               - conditions:
                   - condition: template
                     value_template: "{{ mode == 'preset' }}"
                 sequence:
                   - service: light.turn_on
-                    target: {entity_id: "{{ tl }}"}
+                    target:
+                      entity_id: "{{ tl }}"
                     data:
                       brightness_pct: "{{ v_bright if direction == 1 else v_dim }}"
                       color_temp_kelvin: "{{ v_cool if direction == 1 else v_warm }}"
@@ -669,10 +595,10 @@ action:
           - condition: template
             value_template: "{{ trigger.id == 'mid_event' }}"
         sequence:
-          # Must have event_type
           - condition: template
             value_template: >
               {{ trigger.to_state is not none
+                 and trigger.to_state.attributes is defined
                  and trigger.to_state.attributes.event_type is defined
                  and trigger.to_state.attributes.event_type != none }}
 
@@ -716,19 +642,22 @@ action:
                       - conditions: "{{ act_single == 'toggle' }}"
                         sequence:
                           - service: light.toggle
-                            target: {entity_id: "{{ tl }}"}
+                            target:
+                              entity_id: "{{ tl }}"
                             data:
                               transition: "{{ [trans, 0.5] | max }}"
                       - conditions: "{{ act_single == 'on' }}"
                         sequence:
                           - service: light.turn_on
-                            target: {entity_id: "{{ tl }}"}
+                            target:
+                              entity_id: "{{ tl }}"
                             data:
                               transition: "{{ [trans, 0.5] | max }}"
                       - conditions: "{{ act_single == 'off' }}"
                         sequence:
                           - service: light.turn_off
-                            target: {entity_id: "{{ tl }}"}
+                            target:
+                              entity_id: "{{ tl }}"
                             data:
                               transition: "{{ [trans, 0.5] | max }}"
 
@@ -743,35 +672,40 @@ action:
                       - conditions: "{{ act_double == 'set_bright' }}"
                         sequence:
                           - service: light.turn_on
-                            target: {entity_id: "{{ tl }}"}
+                            target:
+                              entity_id: "{{ tl }}"
                             data:
                               brightness_pct: "{{ v_bright }}"
                               transition: "{{ [trans, 0.5] | max }}"
                       - conditions: "{{ act_double == 'set_dim' }}"
                         sequence:
                           - service: light.turn_on
-                            target: {entity_id: "{{ tl }}"}
+                            target:
+                              entity_id: "{{ tl }}"
                             data:
                               brightness_pct: "{{ v_dim }}"
                               transition: "{{ [trans, 0.5] | max }}"
                       - conditions: "{{ act_double == 'set_warm' }}"
                         sequence:
                           - service: light.turn_on
-                            target: {entity_id: "{{ tl }}"}
+                            target:
+                              entity_id: "{{ tl }}"
                             data:
                               color_temp_kelvin: "{{ v_warm }}"
                               transition: "{{ [trans, 0.5] | max }}"
                       - conditions: "{{ act_double == 'set_cool' }}"
                         sequence:
                           - service: light.turn_on
-                            target: {entity_id: "{{ tl }}"}
+                            target:
+                              entity_id: "{{ tl }}"
                             data:
                               color_temp_kelvin: "{{ v_cool }}"
                               transition: "{{ [trans, 0.5] | max }}"
                       - conditions: "{{ act_double == 'set_color_on' }}"
                         sequence:
                           - service: light.turn_on
-                            target: {entity_id: "{{ tl }}"}
+                            target:
+                              entity_id: "{{ tl }}"
                             data:
                               hs_color: [0, 100]
                               brightness_pct: "{{ v_bright }}"
@@ -779,7 +713,8 @@ action:
                       - conditions: "{{ act_double == 'set_red' }}"
                         sequence:
                           - service: light.turn_on
-                            target: {entity_id: "{{ tl }}"}
+                            target:
+                              entity_id: "{{ tl }}"
                             data:
                               hs_color: [0, 100]
                               brightness_pct: 80
@@ -796,7 +731,8 @@ action:
                       - conditions: "{{ act_hold == 'kelvin_cycle' }}"
                         sequence:
                           - service: light.turn_on
-                            target: {entity_id: "{{ tl }}"}
+                            target:
+                              entity_id: "{{ tl }}"
                             data:
                               color_temp_kelvin: >
                                 {% set current = state_attr(tl, 'color_temp_kelvin') | int(0) %}
@@ -813,35 +749,40 @@ action:
                       - conditions: "{{ act_hold == 'set_bright' }}"
                         sequence:
                           - service: light.turn_on
-                            target: {entity_id: "{{ tl }}"}
+                            target:
+                              entity_id: "{{ tl }}"
                             data:
                               brightness_pct: "{{ v_bright }}"
                               transition: "{{ [trans, 0.5] | max }}"
                       - conditions: "{{ act_hold == 'set_dim' }}"
                         sequence:
                           - service: light.turn_on
-                            target: {entity_id: "{{ tl }}"}
+                            target:
+                              entity_id: "{{ tl }}"
                             data:
                               brightness_pct: "{{ v_dim }}"
                               transition: "{{ [trans, 0.5] | max }}"
                       - conditions: "{{ act_hold == 'set_warm' }}"
                         sequence:
                           - service: light.turn_on
-                            target: {entity_id: "{{ tl }}"}
+                            target:
+                              entity_id: "{{ tl }}"
                             data:
                               color_temp_kelvin: "{{ v_warm }}"
                               transition: "{{ [trans, 0.5] | max }}"
                       - conditions: "{{ act_hold == 'set_cool' }}"
                         sequence:
                           - service: light.turn_on
-                            target: {entity_id: "{{ tl }}"}
+                            target:
+                              entity_id: "{{ tl }}"
                             data:
                               color_temp_kelvin: "{{ v_cool }}"
                               transition: "{{ [trans, 0.5] | max }}"
                       - conditions: "{{ act_hold == 'set_color_on' }}"
                         sequence:
                           - service: light.turn_on
-                            target: {entity_id: "{{ tl }}"}
+                            target:
+                              entity_id: "{{ tl }}"
                             data:
                               hs_color: [0, 100]
                               brightness_pct: "{{ v_bright }}"
@@ -849,7 +790,8 @@ action:
                       - conditions: "{{ act_hold == 'set_red' }}"
                         sequence:
                           - service: light.turn_on
-                            target: {entity_id: "{{ tl }}"}
+                            target:
+                              entity_id: "{{ tl }}"
                             data:
                               hs_color: [0, 100]
                               brightness_pct: 80
