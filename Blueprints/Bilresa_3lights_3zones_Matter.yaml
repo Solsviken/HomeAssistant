@@ -1,0 +1,1012 @@
+blueprint:
+  name: IKEA Bilresa (Matter) - 3 zones, 3 lights - Responsive
+  description: >
+    Control 3 separate lights/groups with IKEA Bilresa (Remote with scroll) via Matter.
+    Zone 1 (1/2) -> Light 1
+    Zone 2 (4/5) -> Light 2
+    Zone 3 (7/8) -> Light 3
+    Buttons are events (1..9). Middle buttons (3/6/9) single press toggles.
+    Optional: middle button hold cycles kelvin warm->neutral->cool.
+    Includes debounce + anti-stale filtering for responsiveness.
+
+  domain: automation
+
+  input:
+    light_1:
+      name: Zone 1 Light (buttons 1-3, scroll 1/2)
+      selector:
+        entity:
+          domain: [light]
+          multiple: false
+
+    light_2:
+      name: Zone 2 Light (buttons 4-6, scroll 4/5)
+      selector:
+        entity:
+          domain: [light]
+          multiple: false
+
+    light_3:
+      name: Zone 3 Light (buttons 7-9, scroll 7/8)
+      selector:
+        entity:
+          domain: [light]
+          multiple: false
+
+    zone1_scroll_mode:
+      name: Zone 1 Scroll Function (1 & 2)
+      default: brightness
+      selector:
+        select:
+          options:
+            - label: Brightness
+              value: brightness
+            - label: Kelvin
+              value: kelvin
+            - label: RGB Hue (rainbow)
+              value: rgb
+            - label: Preset (Bright/Dim + Cool/Warm)
+              value: preset
+
+    zone2_scroll_mode:
+      name: Zone 2 Scroll Function (4 & 5)
+      default: kelvin
+      selector:
+        select:
+          options:
+            - label: Brightness
+              value: brightness
+            - label: Kelvin
+              value: kelvin
+            - label: RGB Hue (rainbow)
+              value: rgb
+            - label: Preset (Bright/Dim + Cool/Warm)
+              value: preset
+
+    zone3_scroll_mode:
+      name: Zone 3 Scroll Function (7 & 8)
+      default: preset
+      selector:
+        select:
+          options:
+            - label: Brightness
+              value: brightness
+            - label: Kelvin
+              value: kelvin
+            - label: RGB Hue (rainbow)
+              value: rgb
+            - label: Preset (Bright/Dim + Cool/Warm)
+              value: preset
+
+    # Matter: these often appear as "Current switch position (x)" and may be sensor OR number
+    sensor_1:
+      name: Scroll entity (1)
+      selector:
+        entity:
+          multiple: false
+          filter:
+            - domain: sensor
+            - domain: number
+    sensor_2:
+      name: Scroll entity (2)
+      selector:
+        entity:
+          multiple: false
+          filter:
+            - domain: sensor
+            - domain: number
+    sensor_4:
+      name: Scroll entity (4)
+      selector:
+        entity:
+          multiple: false
+          filter:
+            - domain: sensor
+            - domain: number
+    sensor_5:
+      name: Scroll entity (5)
+      selector:
+        entity:
+          multiple: false
+          filter:
+            - domain: sensor
+            - domain: number
+    sensor_7:
+      name: Scroll entity (7)
+      selector:
+        entity:
+          multiple: false
+          filter:
+            - domain: sensor
+            - domain: number
+    sensor_8:
+      name: Scroll entity (8)
+      selector:
+        entity:
+          multiple: false
+          filter:
+            - domain: sensor
+            - domain: number
+
+    button_1:
+      name: Button event (1)
+      selector:
+        entity:
+          filter:
+            - domain: event
+    button_2:
+      name: Button event (2)
+      selector:
+        entity:
+          filter:
+            - domain: event
+    button_3:
+      name: Button event (3) - Middle Zone 1
+      selector:
+        entity:
+          filter:
+            - domain: event
+    button_4:
+      name: Button event (4)
+      selector:
+        entity:
+          filter:
+            - domain: event
+    button_5:
+      name: Button event (5)
+      selector:
+        entity:
+          filter:
+            - domain: event
+    button_6:
+      name: Button event (6) - Middle Zone 2
+      selector:
+        entity:
+          filter:
+            - domain: event
+    button_7:
+      name: Button event (7)
+      selector:
+        entity:
+          filter:
+            - domain: event
+    button_8:
+      name: Button event (8)
+      selector:
+        entity:
+          filter:
+            - domain: event
+    button_9:
+      name: Button event (9) - Middle Zone 3
+      selector:
+        entity:
+          filter:
+            - domain: event
+
+    # Tuning
+    debounce_ms:
+      name: Debounce for scroll (ms)
+      default: 120
+      selector:
+        number:
+          min: 0
+          max: 400
+          step: 10
+          unit_of_measurement: ms
+          mode: slider
+
+    stale_event_window_s:
+      name: Ignore stale events older than (seconds)
+      default: 5
+      selector:
+        number:
+          min: 1
+          max: 30
+          step: 1
+          unit_of_measurement: s
+          mode: slider
+
+    transition_s:
+      name: Transition time (seconds)
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 5
+          step: 0.5
+          unit_of_measurement: s
+          mode: slider
+
+    # Steps / presets
+    step_pct:
+      name: Scroll step brightness (%)
+      default: 10
+      selector:
+        number:
+          min: 1
+          max: 50
+          step: 1
+          unit_of_measurement: "%"
+          mode: slider
+
+    step_kelvin:
+      name: Scroll step kelvin (K)
+      default: 400
+      selector:
+        number:
+          min: 100
+          max: 1200
+          step: 50
+          unit_of_measurement: K
+          mode: slider
+
+    step_hue:
+      name: Scroll step hue (degrees)
+      default: 15
+      selector:
+        number:
+          min: 5
+          max: 90
+          step: 1
+          unit_of_measurement: "°"
+          mode: slider
+
+    val_bright:
+      name: Preset Bright (%)
+      default: 80
+      selector:
+        number:
+          min: 1
+          max: 100
+          step: 1
+          unit_of_measurement: "%"
+          mode: slider
+
+    val_dim:
+      name: Preset Dim (%)
+      default: 20
+      selector:
+        number:
+          min: 1
+          max: 100
+          step: 1
+          unit_of_measurement: "%"
+          mode: slider
+
+    val_warm:
+      name: Preset Warm (K)
+      default: 2200
+      selector:
+        number:
+          min: 2000
+          max: 6500
+          step: 50
+          unit_of_measurement: K
+          mode: slider
+
+    val_neutral:
+      name: Preset Neutral (K)
+      default: 3500
+      selector:
+        number:
+          min: 2000
+          max: 6500
+          step: 50
+          unit_of_measurement: K
+          mode: slider
+
+    val_cool:
+      name: Preset Cool (K)
+      default: 4000
+      selector:
+        number:
+          min: 2000
+          max: 6500
+          step: 50
+          unit_of_measurement: K
+          mode: slider
+
+    enable_kelvin_cycle_on_hold:
+      name: Enable kelvin cycle on HOLD for middle buttons (3/6/9)
+      default: true
+      selector:
+        boolean:
+
+    # Group actions (double/hold) – ideas from blueprint 1
+    g1_double:
+      name: Group 1 double-click action
+      default: set_bright
+      selector:
+        select:
+          options:
+            - label: Set Bright
+              value: set_bright
+            - label: Set Dim
+              value: set_dim
+            - label: Set Warm
+              value: set_warm
+            - label: Set Cool
+              value: set_cool
+            - label: Enable Color (saturation on)
+              value: set_color_on
+            - label: Set Red
+              value: set_red
+            - label: No action
+              value: none
+    g1_hold:
+      name: Group 1 hold action
+      default: set_dim
+      selector:
+        select:
+          options:
+            - label: Set Bright
+              value: set_bright
+            - label: Set Dim
+              value: set_dim
+            - label: Set Warm
+              value: set_warm
+            - label: Set Cool
+              value: set_cool
+            - label: Enable Color (saturation on)
+              value: set_color_on
+            - label: Set Red
+              value: set_red
+            - label: No action
+              value: none
+
+    g2_double:
+      name: Group 2 double-click action
+      default: set_cool
+      selector:
+        select:
+          options:
+            - label: Set Bright
+              value: set_bright
+            - label: Set Dim
+              value: set_dim
+            - label: Set Warm
+              value: set_warm
+            - label: Set Cool
+              value: set_cool
+            - label: Enable Color (saturation on)
+              value: set_color_on
+            - label: Set Red
+              value: set_red
+            - label: No action
+              value: none
+    g2_hold:
+      name: Group 2 hold action
+      default: set_warm
+      selector:
+        select:
+          options:
+            - label: Set Bright
+              value: set_bright
+            - label: Set Dim
+              value: set_dim
+            - label: Set Warm
+              value: set_warm
+            - label: Set Cool
+              value: set_cool
+            - label: Enable Color (saturation on)
+              value: set_color_on
+            - label: Set Red
+              value: set_red
+            - label: No action
+              value: none
+
+    g3_double:
+      name: Group 3 double-click action
+      default: set_bright
+      selector:
+        select:
+          options:
+            - label: Set Bright
+              value: set_bright
+            - label: Set Dim
+              value: set_dim
+            - label: Set Warm
+              value: set_warm
+            - label: Set Cool
+              value: set_cool
+            - label: Enable Color (saturation on)
+              value: set_color_on
+            - label: Set Red
+              value: set_red
+            - label: No action
+              value: none
+    g3_hold:
+      name: Group 3 hold action
+      default: set_dim
+      selector:
+        select:
+          options:
+            - label: Set Bright
+              value: set_bright
+            - label: Set Dim
+              value: set_dim
+            - label: Set Warm
+              value: set_warm
+            - label: Set Cool
+              value: set_cool
+            - label: Enable Color (saturation on)
+              value: set_color_on
+            - label: Set Red
+              value: set_red
+            - label: No action
+              value: none
+
+mode: restart
+max_exceeded: silent
+
+variables:
+  l1: !input light_1
+  l2: !input light_2
+  l3: !input light_3
+
+  z1m: !input zone1_scroll_mode
+  z2m: !input zone2_scroll_mode
+  z3m: !input zone3_scroll_mode
+
+  btn1: !input button_1
+  btn2: !input button_2
+  btn3: !input button_3
+  btn4: !input button_4
+  btn5: !input button_5
+  btn6: !input button_6
+  btn7: !input button_7
+  btn8: !input button_8
+  btn9: !input button_9
+
+  debounce_ms: !input debounce_ms
+  stale_s: !input stale_event_window_s
+  trans: !input transition_s
+
+  step_pct: !input step_pct
+  step_kelvin: !input step_kelvin
+  step_hue: !input step_hue
+
+  v_bright: !input val_bright
+  v_dim: !input val_dim
+  v_warm: !input val_warm
+  v_neutral: !input val_neutral
+  v_cool: !input val_cool
+
+  en_kelvin_cycle: !input enable_kelvin_cycle_on_hold
+
+  g1_d: !input g1_double
+  g1_h: !input g1_hold
+  g2_d: !input g2_double
+  g2_h: !input g2_hold
+  g3_d: !input g3_double
+  g3_h: !input g3_hold
+
+trigger:
+  # Scroll zones
+  - platform: state
+    entity_id: !input sensor_1
+    id: z1_up
+  - platform: state
+    entity_id: !input sensor_2
+    id: z1_down
+  - platform: state
+    entity_id: !input sensor_4
+    id: z2_down
+  - platform: state
+    entity_id: !input sensor_5
+    id: z2_up
+  - platform: state
+    entity_id: !input sensor_7
+    id: z3_up
+  - platform: state
+    entity_id: !input sensor_8
+    id: z3_down
+
+  # Buttons
+  - platform: state
+    entity_id:
+      - !input button_1
+      - !input button_2
+      - !input button_3
+      - !input button_4
+      - !input button_5
+      - !input button_6
+      - !input button_7
+      - !input button_8
+      - !input button_9
+    id: btn_event
+
+action:
+  - choose:
+      # =====================
+      # SCROLL
+      # =====================
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.id in ['z1_up','z1_down','z2_up','z2_down','z3_up','z3_down'] }}"
+        sequence:
+          - condition: template
+            value_template: >
+              {{ trigger.to_state is not none
+                 and trigger.to_state.state not in ['unknown','unavailable', none] }}
+          - variables:
+              direction: "{{ 1 if '_up' in trigger.id else -1 }}"
+              target_light: >
+                {% if trigger.id.startswith('z1_') %} {{ l1 }}
+                {% elif trigger.id.startswith('z2_') %} {{ l2 }}
+                {% else %} {{ l3 }} {% endif %}
+              active_mode: >
+                {% if trigger.id.startswith('z1_') %} {{ z1m }}
+                {% elif trigger.id.startswith('z2_') %} {{ z2m }}
+                {% else %} {{ z3m }} {% endif %}
+
+          - choose:
+              - conditions:
+                  - condition: template
+                    value_template: "{{ active_mode == 'brightness' }}"
+                sequence:
+                  - service: light.turn_on
+                    target:
+                      entity_id: "{{ target_light }}"
+                    data:
+                      brightness_step_pct: "{{ step_pct * direction }}"
+                      transition: "{{ trans }}"
+
+              - conditions:
+                  - condition: template
+                    value_template: "{{ active_mode == 'kelvin' }}"
+                sequence:
+                  - service: light.turn_on
+                    target:
+                      entity_id: "{{ target_light }}"
+                    data:
+                      color_temp_kelvin: >
+                        {% set current = state_attr(target_light, 'color_temp_kelvin') | default(3000) | int %}
+                        {% if direction == 1 %}
+                          {{ [current + (step_kelvin | int), 6500] | min }}
+                        {% else %}
+                          {{ [current - (step_kelvin | int), 2000] | max }}
+                        {% endif %}
+                      transition: "{{ trans }}"
+
+              - conditions:
+                  - condition: template
+                    value_template: "{{ active_mode == 'rgb' }}"
+                sequence:
+                  - service: light.turn_on
+                    target:
+                      entity_id: "{{ target_light }}"
+                    data:
+                      hs_color: >
+                        {% set current = state_attr(target_light, 'hs_color') %}
+                        {% set h = (current[0] if current else 0) | float %}
+                        {% set s = (current[1] if current else 100) | float %}
+                        {{ [ (h + (step_hue * direction)) % 360, s ] }}
+                      transition: "{{ trans }}"
+
+              - conditions:
+                  - condition: template
+                    value_template: "{{ active_mode == 'preset' }}"
+                sequence:
+                  - service: light.turn_on
+                    target:
+                      entity_id: "{{ target_light }}"
+                    data:
+                      brightness_pct: "{{ v_bright if direction == 1 else v_dim }}"
+                      color_temp_kelvin: "{{ v_cool if direction == 1 else v_warm }}"
+                      transition: "{{ [trans, 0.5] | max }}"
+
+          - delay:
+              milliseconds: "{{ debounce_ms | int }}"
+
+      # =====================
+      # BUTTONS (events)
+      # =====================
+      - conditions:
+          - condition: template
+            value_template: "{{ trigger.id == 'btn_event' }}"
+        sequence:
+          - condition: template
+            value_template: >
+              {{ trigger.to_state is not none
+                 and trigger.to_state.attributes.event_type is defined
+                 and trigger.to_state.attributes.event_type != none }}
+
+          # Anti-stale / reconnect filter
+          - condition: template
+            value_template: >
+              {% set w = stale_s | int %}
+              {% set ok_changed = (now() - trigger.to_state.last_changed).total_seconds() < w %}
+              {% set dt = (trigger.to_state.state | as_datetime) %}
+              {% set ok_state = (dt is not none) and ((now() - (dt | as_local)).total_seconds() < w) %}
+              {{ ok_changed or ok_state }}
+
+          - variables:
+              et: "{{ trigger.to_state.attributes.event_type }}"
+
+          - choose:
+              # ---------- GROUP 1 ----------
+              - conditions:
+                  - condition: template
+                    value_template: "{{ trigger.entity_id in [btn1, btn2, btn3] }}"
+                sequence:
+                  - variables:
+                      tl: "{{ l1 }}"
+                      dbl_action: "{{ g1_d }}"
+                      hold_action: "{{ g1_h }}"
+                      mid_btn: "{{ btn3 }}"
+                  - choose:
+                      - conditions:
+                          - condition: template
+                            value_template: "{{ ('multi_press_1' in et) or ('short_release' in et) }}"
+                        sequence:
+                          - choose:
+                              - conditions:
+                                  - condition: template
+                                    value_template: "{{ trigger.entity_id == mid_btn }}"
+                                sequence:
+                                  - service: light.toggle
+                                    target: {entity_id: "{{ tl }}"}
+                                    data:
+                                      transition: "{{ [trans, 0.5] | max }}"
+
+                      - conditions:
+                          - condition: template
+                            value_template: "{{ 'multi_press_2' in et }}"
+                        sequence:
+                          - choose:
+                              - conditions: "{{ dbl_action == 'set_bright' }}"
+                                sequence:
+                                  - service: light.turn_on
+                                    target: {entity_id: "{{ tl }}"}
+                                    data: {brightness_pct: "{{ v_bright }}", transition: "{{ [trans, 0.5] | max }}"}
+                              - conditions: "{{ dbl_action == 'set_dim' }}"
+                                sequence:
+                                  - service: light.turn_on
+                                    target: {entity_id: "{{ tl }}"}
+                                    data: {brightness_pct: "{{ v_dim }}", transition: "{{ [trans, 0.5] | max }}"}
+                              - conditions: "{{ dbl_action == 'set_warm' }}"
+                                sequence:
+                                  - service: light.turn_on
+                                    target: {entity_id: "{{ tl }}"}
+                                    data: {color_temp_kelvin: "{{ v_warm }}", transition: "{{ [trans, 0.5] | max }}"}
+                              - conditions: "{{ dbl_action == 'set_cool' }}"
+                                sequence:
+                                  - service: light.turn_on
+                                    target: {entity_id: "{{ tl }}"}
+                                    data: {color_temp_kelvin: "{{ v_cool }}", transition: "{{ [trans, 0.5] | max }}"}
+                              - conditions: "{{ dbl_action == 'set_color_on' }}"
+                                sequence:
+                                  - service: light.turn_on
+                                    target: {entity_id: "{{ tl }}"}
+                                    data:
+                                      hs_color: [0, 100]
+                                      brightness_pct: "{{ v_bright }}"
+                                      transition: "{{ [trans, 0.5] | max }}"
+                              - conditions: "{{ dbl_action == 'set_red' }}"
+                                sequence:
+                                  - service: light.turn_on
+                                    target: {entity_id: "{{ tl }}"}
+                                    data:
+                                      hs_color: [0, 100]
+                                      brightness_pct: 80
+                                      transition: "{{ [trans, 0.5] | max }}"
+
+                      - conditions:
+                          - condition: template
+                            value_template: "{{ 'long_press' in et }}"
+                        sequence:
+                          - choose:
+                              - conditions:
+                                  - condition: template
+                                    value_template: "{{ en_kelvin_cycle and trigger.entity_id == mid_btn }}"
+                                sequence:
+                                  - service: light.turn_on
+                                    target: {entity_id: "{{ tl }}"}
+                                    data:
+                                      color_temp_kelvin: >
+                                        {% set current = state_attr(tl, 'color_temp_kelvin') | int(0) %}
+                                        {% set mid_wn = ((v_warm + v_neutral) / 2) %}
+                                        {% set mid_nc = ((v_neutral + v_cool) / 2) %}
+                                        {% if current == 0 or current <= mid_wn %}
+                                          {{ v_neutral }}
+                                        {% elif current <= mid_nc %}
+                                          {{ v_cool }}
+                                        {% else %}
+                                          {{ v_warm }}
+                                        {% endif %}
+                                      transition: "{{ [trans, 0.5] | max }}"
+                            default:
+                              - choose:
+                                  - conditions: "{{ hold_action == 'set_bright' }}"
+                                    sequence:
+                                      - service: light.turn_on
+                                        target: {entity_id: "{{ tl }}"}
+                                        data: {brightness_pct: "{{ v_bright }}", transition: "{{ [trans, 0.5] | max }}"}
+                                  - conditions: "{{ hold_action == 'set_dim' }}"
+                                    sequence:
+                                      - service: light.turn_on
+                                        target: {entity_id: "{{ tl }}"}
+                                        data: {brightness_pct: "{{ v_dim }}", transition: "{{ [trans, 0.5] | max }}"}
+                                  - conditions: "{{ hold_action == 'set_warm' }}"
+                                    sequence:
+                                      - service: light.turn_on
+                                        target: {entity_id: "{{ tl }}"}
+                                        data: {color_temp_kelvin: "{{ v_warm }}", transition: "{{ [trans, 0.5] | max }}"}
+                                  - conditions: "{{ hold_action == 'set_cool' }}"
+                                    sequence:
+                                      - service: light.turn_on
+                                        target: {entity_id: "{{ tl }}"}
+                                        data: {color_temp_kelvin: "{{ v_cool }}", transition: "{{ [trans, 0.5] | max }}"}
+                                  - conditions: "{{ hold_action == 'set_color_on' }}"
+                                    sequence:
+                                      - service: light.turn_on
+                                        target: {entity_id: "{{ tl }}"}
+                                        data:
+                                          hs_color: [0, 100]
+                                          brightness_pct: "{{ v_bright }}"
+                                          transition: "{{ [trans, 0.5] | max }}"
+                                  - conditions: "{{ hold_action == 'set_red' }}"
+                                    sequence:
+                                      - service: light.turn_on
+                                        target: {entity_id: "{{ tl }}"}
+                                        data:
+                                          hs_color: [0, 100]
+                                          brightness_pct: 80
+                                          transition: "{{ [trans, 0.5] | max }}"
+
+              # ---------- GROUP 2 ----------
+              - conditions:
+                  - condition: template
+                    value_template: "{{ trigger.entity_id in [btn4, btn5, btn6] }}"
+                sequence:
+                  - variables:
+                      tl: "{{ l2 }}"
+                      dbl_action: "{{ g2_d }}"
+                      hold_action: "{{ g2_h }}"
+                      mid_btn: "{{ btn6 }}"
+                  - choose:
+                      - conditions:
+                          - condition: template
+                            value_template: "{{ ('multi_press_1' in et) or ('short_release' in et) }}"
+                        sequence:
+                          - choose:
+                              - conditions:
+                                  - condition: template
+                                    value_template: "{{ trigger.entity_id == mid_btn }}"
+                                sequence:
+                                  - service: light.toggle
+                                    target: {entity_id: "{{ tl }}"}
+                                    data:
+                                      transition: "{{ [trans, 0.5] | max }}"
+                      - conditions:
+                          - condition: template
+                            value_template: "{{ 'multi_press_2' in et }}"
+                        sequence:
+                          - choose:
+                              - conditions: "{{ dbl_action == 'set_bright' }}"
+                                sequence:
+                                  - service: light.turn_on
+                                    target: {entity_id: "{{ tl }}"}
+                                    data: {brightness_pct: "{{ v_bright }}", transition: "{{ [trans, 0.5] | max }}"}
+                              - conditions: "{{ dbl_action == 'set_dim' }}"
+                                sequence:
+                                  - service: light.turn_on
+                                    target: {entity_id: "{{ tl }}"}
+                                    data: {brightness_pct: "{{ v_dim }}", transition: "{{ [trans, 0.5] | max }}"}
+                              - conditions: "{{ dbl_action == 'set_warm' }}"
+                                sequence:
+                                  - service: light.turn_on
+                                    target: {entity_id: "{{ tl }}"}
+                                    data: {color_temp_kelvin: "{{ v_warm }}", transition: "{{ [trans, 0.5] | max }}"}
+                              - conditions: "{{ dbl_action == 'set_cool' }}"
+                                sequence:
+                                  - service: light.turn_on
+                                    target: {entity_id: "{{ tl }}"}
+                                    data: {color_temp_kelvin: "{{ v_cool }}", transition: "{{ [trans, 0.5] | max }}"}
+                              - conditions: "{{ dbl_action == 'set_color_on' }}"
+                                sequence:
+                                  - service: light.turn_on
+                                    target: {entity_id: "{{ tl }}"}
+                                    data:
+                                      hs_color: [0, 100]
+                                      brightness_pct: "{{ v_bright }}"
+                                      transition: "{{ [trans, 0.5] | max }}"
+                              - conditions: "{{ dbl_action == 'set_red' }}"
+                                sequence:
+                                  - service: light.turn_on
+                                    target: {entity_id: "{{ tl }}"}
+                                    data:
+                                      hs_color: [0, 100]
+                                      brightness_pct: 80
+                                      transition: "{{ [trans, 0.5] | max }}"
+                      - conditions:
+                          - condition: template
+                            value_template: "{{ 'long_press' in et }}"
+                        sequence:
+                          - choose:
+                              - conditions:
+                                  - condition: template
+                                    value_template: "{{ en_kelvin_cycle and trigger.entity_id == mid_btn }}"
+                                sequence:
+                                  - service: light.turn_on
+                                    target: {entity_id: "{{ tl }}"}
+                                    data:
+                                      color_temp_kelvin: >
+                                        {% set current = state_attr(tl, 'color_temp_kelvin') | int(0) %}
+                                        {% set mid_wn = ((v_warm + v_neutral) / 2) %}
+                                        {% set mid_nc = ((v_neutral + v_cool) / 2) %}
+                                        {% if current == 0 or current <= mid_wn %}
+                                          {{ v_neutral }}
+                                        {% elif current <= mid_nc %}
+                                          {{ v_cool }}
+                                        {% else %}
+                                          {{ v_warm }}
+                                        {% endif %}
+                                      transition: "{{ [trans, 0.5] | max }}"
+                            default:
+                              - choose:
+                                  - conditions: "{{ hold_action == 'set_bright' }}"
+                                    sequence:
+                                      - service: light.turn_on
+                                        target: {entity_id: "{{ tl }}"}
+                                        data: {brightness_pct: "{{ v_bright }}", transition: "{{ [trans, 0.5] | max }}"}
+                                  - conditions: "{{ hold_action == 'set_dim' }}"
+                                    sequence:
+                                      - service: light.turn_on
+                                        target: {entity_id: "{{ tl }}"}
+                                        data: {brightness_pct: "{{ v_dim }}", transition: "{{ [trans, 0.5] | max }}"}
+                                  - conditions: "{{ hold_action == 'set_warm' }}"
+                                    sequence:
+                                      - service: light.turn_on
+                                        target: {entity_id: "{{ tl }}"}
+                                        data: {color_temp_kelvin: "{{ v_warm }}", transition: "{{ [trans, 0.5] | max }}"}
+                                  - conditions: "{{ hold_action == 'set_cool' }}"
+                                    sequence:
+                                      - service: light.turn_on
+                                        target: {entity_id: "{{ tl }}"}
+                                        data: {color_temp_kelvin: "{{ v_cool }}", transition: "{{ [trans, 0.5] | max }}"}
+                                  - conditions: "{{ hold_action == 'set_color_on' }}"
+                                    sequence:
+                                      - service: light.turn_on
+                                        target: {entity_id: "{{ tl }}"}
+                                        data:
+                                          hs_color: [0, 100]
+                                          brightness_pct: "{{ v_bright }}"
+                                          transition: "{{ [trans, 0.5] | max }}"
+                                  - conditions: "{{ hold_action == 'set_red' }}"
+                                    sequence:
+                                      - service: light.turn_on
+                                        target: {entity_id: "{{ tl }}"}
+                                        data:
+                                          hs_color: [0, 100]
+                                          brightness_pct: 80
+                                          transition: "{{ [trans, 0.5] | max }}"
+
+              # ---------- GROUP 3 ----------
+              - conditions:
+                  - condition: template
+                    value_template: "{{ trigger.entity_id in [btn7, btn8, btn9] }}"
+                sequence:
+                  - variables:
+                      tl: "{{ l3 }}"
+                      dbl_action: "{{ g3_d }}"
+                      hold_action: "{{ g3_h }}"
+                      mid_btn: "{{ btn9 }}"
+                  - choose:
+                      - conditions:
+                          - condition: template
+                            value_template: "{{ ('multi_press_1' in et) or ('short_release' in et) }}"
+                        sequence:
+                          - choose:
+                              - conditions:
+                                  - condition: template
+                                    value_template: "{{ trigger.entity_id == mid_btn }}"
+                                sequence:
+                                  - service: light.toggle
+                                    target: {entity_id: "{{ tl }}"}
+                                    data:
+                                      transition: "{{ [trans, 0.5] | max }}"
+                      - conditions:
+                          - condition: template
+                            value_template: "{{ 'multi_press_2' in et }}"
+                        sequence:
+                          - choose:
+                              - conditions: "{{ dbl_action == 'set_bright' }}"
+                                sequence:
+                                  - service: light.turn_on
+                                    target: {entity_id: "{{ tl }}"}
+                                    data: {brightness_pct: "{{ v_bright }}", transition: "{{ [trans, 0.5] | max }}"}
+                              - conditions: "{{ dbl_action == 'set_dim' }}"
+                                sequence:
+                                  - service: light.turn_on
+                                    target: {entity_id: "{{ tl }}"}
+                                    data: {brightness_pct: "{{ v_dim }}", transition: "{{ [trans, 0.5] | max }}"}
+                              - conditions: "{{ dbl_action == 'set_warm' }}"
+                                sequence:
+                                  - service: light.turn_on
+                                    target: {entity_id: "{{ tl }}"}
+                                    data: {color_temp_kelvin: "{{ v_warm }}", transition: "{{ [trans, 0.5] | max }}"}
+                              - conditions: "{{ dbl_action == 'set_cool' }}"
+                                sequence:
+                                  - service: light.turn_on
+                                    target: {entity_id: "{{ tl }}"}
+                                    data: {color_temp_kelvin: "{{ v_cool }}", transition: "{{ [trans, 0.5] | max }}"}
+                              - conditions: "{{ dbl_action == 'set_color_on' }}"
+                                sequence:
+                                  - service: light.turn_on
+                                    target: {entity_id: "{{ tl }}"}
+                                    data:
+                                      hs_color: [0, 100]
+                                      brightness_pct: "{{ v_bright }}"
+                                      transition: "{{ [trans, 0.5] | max }}"
+                              - conditions: "{{ dbl_action == 'set_red' }}"
+                                sequence:
+                                  - service: light.turn_on
+                                    target: {entity_id: "{{ tl }}"}
+                                    data:
+                                      hs_color: [0, 100]
+                                      brightness_pct: 80
+                                      transition: "{{ [trans, 0.5] | max }}"
+                      - conditions:
+                          - condition: template
+                            value_template: "{{ 'long_press' in et }}"
+                        sequence:
+                          - choose:
+                              - conditions:
+                                  - condition: template
+                                    value_template: "{{ en_kelvin_cycle and trigger.entity_id == mid_btn }}"
+                                sequence:
+                                  - service: light.turn_on
+                                    target: {entity_id: "{{ tl }}"}
+                                    data:
+                                      color_temp_kelvin: >
+                                        {% set current = state_attr(tl, 'color_temp_kelvin') | int(0) %}
+                                        {% set mid_wn = ((v_warm + v_neutral) / 2) %}
+                                        {% set mid_nc = ((v_neutral + v_cool) / 2) %}
+                                        {% if current == 0 or current <= mid_wn %}
+                                          {{ v_neutral }}
+                                        {% elif current <= mid_nc %}
+                                          {{ v_cool }}
+                                        {% else %}
+                                          {{ v_warm }}
+                                        {% endif %}
+                                      transition: "{{ [trans, 0.5] | max }}"
+                            default:
+                              - choose:
+                                  - conditions: "{{ hold_action == 'set_bright' }}"
+                                    sequence:
+                                      - service: light.turn_on
+                                        target: {entity_id: "{{ tl }}"}
+                                        data: {brightness_pct: "{{ v_bright }}", transition: "{{ [trans, 0.5] | max }}"}
+                                  - conditions: "{{ hold_action == 'set_dim' }}"
+                                    sequence:
+                                      - service: light.turn_on
+                                        target: {entity_id: "{{ tl }}"}
+                                        data: {brightness_pct: "{{ v_dim }}", transition: "{{ [trans, 0.5] | max }}"}
+                                  - conditions: "{{ hold_action == 'set_warm' }}"
+                                    sequence:
+                                      - service: light.turn_on
+                                        target: {entity_id: "{{ tl }}"}
+                                        data: {color_temp_kelvin: "{{ v_warm }}", transition: "{{ [trans, 0.5] | max }}"}
+                                  - conditions: "{{ hold_action == 'set_cool' }}"
+                                    sequence:
+                                      - service: light.turn_on
+                                        target: {entity_id: "{{ tl }}"}
+                                        data: {color_temp_kelvin: "{{ v_cool }}", transition: "{{ [trans, 0.5] | max }}"}
+                                  - conditions: "{{ hold_action == 'set_color_on' }}"
+                                    sequence:
+                                      - service: light.turn_on
+                                        target: {entity_id: "{{ tl }}"}
+                                        data:
+                                          hs_color: [0, 100]
+                                          brightness_pct: "{{ v_bright }}"
+                                          transition: "{{ [trans, 0.5] | max }}"
+                                  - conditions: "{{ hold_action == 'set_red' }}"
+                                    sequence:
+                                      - service: light.turn_on
+                                        target: {entity_id: "{{ tl }}"}
+                                        data:
+                                          hs_color: [0, 100]
+                                          brightness_pct: 80
+                                          transition: "{{ [trans, 0.5] | max }}"
