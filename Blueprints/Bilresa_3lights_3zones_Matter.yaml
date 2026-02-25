@@ -108,199 +108,199 @@ blueprint:
           filter:
             - domain: event
 
-    # Per-zone scroll actions (strings only; choose 'none' to disable)
+    # Per-zone scroll actions (choose 'none' to disable)
     z1_scroll_up_action:
       name: Zone 1 - Scroll UP action
-      default: brightness
+      default: "brightness"
       selector:
         select:
           options:
-            - none
-            - brightness
-            - kelvin
-            - rgb
-            - preset
+            - "none"
+            - "brightness"
+            - "kelvin"
+            - "rgb"
+            - "preset"
 
     z1_scroll_down_action:
       name: Zone 1 - Scroll DOWN action
-      default: brightness
+      default: "brightness"
       selector:
         select:
           options:
-            - none
-            - brightness
-            - kelvin
-            - rgb
-            - preset
+            - "none"
+            - "brightness"
+            - "kelvin"
+            - "rgb"
+            - "preset"
 
     z2_scroll_up_action:
       name: Zone 2 - Scroll UP action
-      default: none
+      default: "none"
       selector:
         select:
           options:
-            - none
-            - brightness
-            - kelvin
-            - rgb
-            - preset
+            - "none"
+            - "brightness"
+            - "kelvin"
+            - "rgb"
+            - "preset"
 
     z2_scroll_down_action:
       name: Zone 2 - Scroll DOWN action
-      default: none
+      default: "none"
       selector:
         select:
           options:
-            - none
-            - brightness
-            - kelvin
-            - rgb
-            - preset
+            - "none"
+            - "brightness"
+            - "kelvin"
+            - "rgb"
+            - "preset"
 
     z3_scroll_up_action:
       name: Zone 3 - Scroll UP action
-      default: preset
+      default: "preset"
       selector:
         select:
           options:
-            - none
-            - brightness
-            - kelvin
-            - rgb
-            - preset
+            - "none"
+            - "brightness"
+            - "kelvin"
+            - "rgb"
+            - "preset"
 
     z3_scroll_down_action:
       name: Zone 3 - Scroll DOWN action
-      default: preset
+      default: "preset"
       selector:
         select:
           options:
-            - none
-            - brightness
-            - kelvin
-            - rgb
-            - preset
+            - "none"
+            - "brightness"
+            - "kelvin"
+            - "rgb"
+            - "preset"
 
-    # Middle button actions per zone (strings only; choose 'none' to disable)
+    # Middle button actions per zone (choose 'none' to disable)
     z1_single:
       name: Zone 1 - Middle SINGLE press (3)
-      default: toggle
+      default: "toggle"
       selector:
         select:
           options:
-            - none
-            - toggle
-            - on
-            - off
+            - "none"
+            - "toggle"
+            - "on"
+            - "off"
 
     z1_double:
       name: Zone 1 - Middle DOUBLE press (3)
-      default: none
+      default: "none"
       selector:
         select:
           options:
-            - none
-            - set_bright
-            - set_dim
-            - set_warm
-            - set_cool
-            - set_color_on
-            - set_red
+            - "none"
+            - "set_bright"
+            - "set_dim"
+            - "set_warm"
+            - "set_cool"
+            - "set_color_on"
+            - "set_red"
 
     z1_hold:
       name: Zone 1 - Middle HOLD (3)
-      default: kelvin_cycle
+      default: "kelvin_cycle"
       selector:
         select:
           options:
-            - none
-            - kelvin_cycle
-            - set_bright
-            - set_dim
-            - set_warm
-            - set_cool
-            - set_color_on
-            - set_red
+            - "none"
+            - "kelvin_cycle"
+            - "set_bright"
+            - "set_dim"
+            - "set_warm"
+            - "set_cool"
+            - "set_color_on"
+            - "set_red"
 
     z2_single:
       name: Zone 2 - Middle SINGLE press (6)
-      default: toggle
+      default: "toggle"
       selector:
         select:
           options:
-            - none
-            - toggle
-            - on
-            - off
+            - "none"
+            - "toggle"
+            - "on"
+            - "off"
 
     z2_double:
       name: Zone 2 - Middle DOUBLE press (6)
-      default: none
+      default: "none"
       selector:
         select:
           options:
-            - none
-            - set_bright
-            - set_dim
-            - set_warm
-            - set_cool
-            - set_color_on
-            - set_red
+            - "none"
+            - "set_bright"
+            - "set_dim"
+            - "set_warm"
+            - "set_cool"
+            - "set_color_on"
+            - "set_red"
 
     z2_hold:
       name: Zone 2 - Middle HOLD (6)
-      default: none
+      default: "none"
       selector:
         select:
           options:
-            - none
-            - kelvin_cycle
-            - set_bright
-            - set_dim
-            - set_warm
-            - set_cool
-            - set_color_on
-            - set_red
+            - "none"
+            - "kelvin_cycle"
+            - "set_bright"
+            - "set_dim"
+            - "set_warm"
+            - "set_cool"
+            - "set_color_on"
+            - "set_red"
 
     z3_single:
       name: Zone 3 - Middle SINGLE press (9)
-      default: toggle
+      default: "toggle"
       selector:
         select:
           options:
-            - none
-            - toggle
-            - on
-            - off
+            - "none"
+            - "toggle"
+            - "on"
+            - "off"
 
     z3_double:
       name: Zone 3 - Middle DOUBLE press (9)
-      default: none
+      default: "none"
       selector:
         select:
           options:
-            - none
-            - set_bright
-            - set_dim
-            - set_warm
-            - set_cool
-            - set_color_on
-            - set_red
+            - "none"
+            - "set_bright"
+            - "set_dim"
+            - "set_warm"
+            - "set_cool"
+            - "set_color_on"
+            - "set_red"
 
     z3_hold:
       name: Zone 3 - Middle HOLD (9)
-      default: kelvin_cycle
+      default: "kelvin_cycle"
       selector:
         select:
           options:
-            - none
-            - kelvin_cycle
-            - set_bright
-            - set_dim
-            - set_warm
-            - set_cool
-            - set_color_on
-            - set_red
+            - "none"
+            - "kelvin_cycle"
+            - "set_bright"
+            - "set_dim"
+            - "set_warm"
+            - "set_cool"
+            - "set_color_on"
+            - "set_red"
 
     # Responsiveness tuning
     debounce_ms:
@@ -631,7 +631,7 @@ action:
                 {% else %} {{ z3_hold }} {% endif %}
 
           - choose:
-              # SINGLE press (multi_press_1 or short_release)
+              # SINGLE press
               - conditions:
                   - condition: template
                     value_template: "{{ ('multi_press_1' in et) or ('short_release' in et) }}"
@@ -661,7 +661,7 @@ action:
                             data:
                               transition: "{{ [trans, 0.5] | max }}"
 
-              # DOUBLE press (multi_press_2)
+              # DOUBLE press
               - conditions:
                   - condition: template
                     value_template: "{{ 'multi_press_2' in et }}"
@@ -720,7 +720,7 @@ action:
                               brightness_pct: 80
                               transition: "{{ [trans, 0.5] | max }}"
 
-              # HOLD (long_press)
+              # HOLD
               - conditions:
                   - condition: template
                     value_template: "{{ 'long_press' in et }}"
